@@ -110,13 +110,19 @@ values as defaults and prints a warning, so nothing is silently changed.
    ≈ 437 × 200 mm ([case-measurements.md](case-measurements.md)), so the 415 × 145 mm
    plate fits with ≈ 20 mm to spare lengthwise. The exact offset still matters,
    because the pocket only has 1 mm of play on each side.
-6. **The radiator would hang over the 5.25" drive cage.** The cage runs from about
-   285 mm from the rear to the front frame and reaches up to the cross support. A
-   415 mm plate starting at the rear runs to ≈ 415 mm, and the radiator (≈ 27 mm) plus
-   fans (25 mm) hang ≈ 52 mm below it. So the front ~130 mm of the radiator would sit
-   on top of the cage. Either the cage comes out, or the radiator can't go under
-   the lid in that zone.
-7. **The supplied pocket script had a few bugs.** These are fixed in the code:
+6. **Front of the radiator runs into the 5.25" drive cage, so the bays must be
+   empty.** The cage runs from about 285 mm from the rear to the front frame. A test
+   fit shows a 120 mm radiator drops down between the cage side walls, under the
+   cross support. So the cage frame isn't in the way, but any drive in the top bays
+   is. Still to check: the 145 mm base plate also reaches into the cage zone, so the
+   cage's inside width at the top has to be more than 145 mm (5.25" bays are usually
+   ≈ 148 mm, which leaves only ≈ 1.5 mm per side). If the walls reach the lid,
+   either confirm that width or narrow the plate in that zone.
+7. **The power supply is in the way.** A top-mounted ATX PSU sits right where the
+   rear end of the radiator goes. It needs to move, e.g. to the bottom of the case
+   or to the freed-up drive bay area. This is outside the bracket itself, but the
+   bracket can't be fitted until it's done.
+8. **The supplied pocket script had a few bugs.** These are fixed in the code:
    - all of the clearance went on one side of the rail instead of being split evenly;
    - it resized the base by picking `bpy.context.active_object`, which `select_set`
      doesn't change, so it would scale whatever object happened to be active. The

@@ -37,15 +37,20 @@ the 5.25" drive cage's rear frame.
 ## 5.25" drive cage
 
 It sits under the front of the lid, from roughly **285 mm from the rear to the
-front frame (≈ 440 mm)**, and reaches up to the cross support (photo). Anything
-that hangs under the lid in that zone (radiator, fans) collides with it unless
-the cage is removed. See open issue 6 in [aio-360-bracket.md](aio-360-bracket.md).
+front frame (≈ 440 mm)**, and reaches up to the cross support (photo). A test fit
+shows a 120 mm wide radiator drops down between its side walls, so only drives in
+the top bays get in the way. See open issue 6 in [aio-360-bracket.md](aio-360-bracket.md).
+
+## Power supply
+
+The stock PSU sits top-rear, where the radiator's rear end goes, so it has to be
+relocated (open issue 7 in [aio-360-bracket.md](aio-360-bracket.md)).
 
 ## Still to measure
 
 - Lid flange height and the inside length/width between the flanges. The base
   plate has to fit between them.
-- How deep the drive cage is and how far its top sits below the lid, or whether
-  it will be removed.
+- Inside width of the drive cage at the top (must be > 145 mm for the base plate),
+  and whether its side walls reach the lid.
 - Height from the lid to the top of the motherboard tray / tallest board
   component, for radiator + fan clearance.
