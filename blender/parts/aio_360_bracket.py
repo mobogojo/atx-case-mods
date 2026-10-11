@@ -33,7 +33,7 @@ class AIOBracketParams:
     # Plate footprint
     length: float = 415.0         # X; fits a 395-400 mm radiator incl. end tanks
     width: float = 145.0          # Y; 12.5 mm border outside a 120 mm fan
-    base_thickness: float = 10.0  # lower structural bracket: 5.5 pocket + 4.5 floor
+    base_thickness: float = 10.0  # lower structural bracket: 6 pocket + 4 floor
     bezel_thickness: float = 4.0  # upper cosmetic trim
 
     # Airflow opening (single rectangular slot, centred)
@@ -49,11 +49,11 @@ class AIOBracketParams:
 
     # Pocket over the lid's support rail (base only). The rail runs across the plate
     # (along Y) on the lid underside; the pocket opens on the base's top face (Z=t).
-    rail_from_rear: Tuple[float, float] = (308.0, 325.0)  # measured rail span from rear wall
+    rail_from_rear: Tuple[float, float] = (308.0, 325.0)  # measured 17 mm rail span
     rail_thickness: float = 5.0        # measured; how far the rail hangs below the lid
     rear_wall_to_plate: float = 0.0    # rear wall -> plate's -X edge (ASSUMED, not measured)
-    pocket_depth: float = 5.5          # rail thickness + 0.5 so it doesn't bind
-    pocket_clearance: float = 1.0      # added to the rail span, split evenly both sides
+    pocket_depth: float = 6.0          # rail + 1 mm so it doesn't bind (6.5 also OK)
+    pocket_clearance: float = 2.0      # 17 -> 19 mm pocket: room to adjust along X
 
     # Print segmentation (shiplap joints along X)
     split_x: Tuple[float, ...] = (-108.75, 108.75)
