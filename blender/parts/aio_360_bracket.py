@@ -52,7 +52,8 @@ class AIOBracketParams:
     # Rail span measured from the OUTSIDE face of the case rear wall (17 mm wide).
     rail_from_rear: Tuple[float, float] = (308.0, 325.0)
     rail_thickness: float = 5.0        # measured; how far the rail hangs below the lid
-    rear_wall_to_plate: float = 0.0    # outside rear face -> plate's -X edge (NOT measured)
+    rear_wall_to_plate: float = 20.0   # outside rear face -> plate's -X edge; reserved for PSU
+    case_length: float = 440.0         # outside rear face -> front; plate must end inside it
     pocket_depth: float = 6.0          # rail + 1 mm so it doesn't bind (6.5 also OK)
     pocket_clearance: float = 2.0      # 17 -> 19 mm pocket: room to adjust along X
 
@@ -60,6 +61,7 @@ class AIOBracketParams:
     split_x: Tuple[float, ...] = (-108.75, 108.75)
     lap_length: float = 20.0      # overlap length of each half-lap joint
     joint_clearance: float = 0.2  # gap left on the vertical faces of each joint
+    joint_pocket_margin: float = 10.0  # solid material kept between a lap and the pocket
     bed_size: float = 305.0       # largest printable X or Y extent
 
     def thickness(self, variant):
@@ -150,17 +152,22 @@ def validate(p):
                         % (p.pocket_depth, p.base_thickness))
     if not (-p.length / 2.0 < px0 and px1 < p.length / 2.0):
         problems.append("Rail pocket X=%.2f..%.2f runs off the plate." % (px0, px1))
+    if p.rear_wall_to_plate + p.length > p.case_length:
+        problems.append("Plate runs from %.1f to %.1f mm from the rear, past the %.1f mm case."
+                        % (p.rear_wall_to_plate, p.rear_wall_to_plate + p.length,
+                           p.case_length))
     for x, y in p.hole_positions():
         if px0 - r < x < px1 + r:
             problems.append("Rail pocket X=%.2f..%.2f overlaps the fan hole at (%.2f, %.2f)."
                             % (px0, px1, x, y))
+    m = p.joint_pocket_margin
     for s in p.split_x:
         lo, hi = s - p.lap_length / 2.0, s + p.lap_length / 2.0
-        if px0 < hi and lo < px1:
+        if px0 - m < hi and lo < px1 + m:
             problems.append(
-                "Joint at X=%.2f (lap %.2f..%.2f) runs through the base plate's rail pocket at "
-                "X=%.2f..%.2f, which removes most of the lap. Move the joint, e.g. "
-                "split_x=(0,)." % (s, lo, hi, px0, px1))
+                "Joint at X=%.2f (lap %.2f..%.2f) is within %.0f mm of the base plate's rail "
+                "pocket at X=%.2f..%.2f, so the lap is left hanging off a thin wall. Move "
+                "the joint, e.g. split_x=(0,)." % (s, lo, hi, m, px0, px1))
     return problems
 
 

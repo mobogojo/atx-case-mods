@@ -42,7 +42,7 @@ the case rear wall**.
  │          └────────────┘          │
  │         4 mm floor               │
  └──────────────────────────────────┘   Z = 0, radiator side
-           X = 99.5 → 118.5 (19 mm)
+          X = 119.5 → 138.5 (19 mm)
 ```
 
 | Parameter | Field | Value | Notes |
@@ -51,9 +51,12 @@ the case rear wall**.
 | Rail thickness | `rail_thickness` | 5 mm | Measured |
 | Pocket depth | `pocket_depth` | 6 mm | 1 mm clearance over the rail; 6.5 mm also fine (3.5 mm floor) |
 | Pocket clearance | `pocket_clearance` | 2 mm | Added to the span, 1 mm each side → 19 mm, room to adjust |
-| Outside rear face → plate −X edge | `rear_wall_to_plate` | 0 mm | **Assumed**, see open issues |
+| Outside rear face → plate −X edge | `rear_wall_to_plate` | 20 mm | Rear 20 mm reserved for the PSU |
+| Case length, outside | `case_length` | 440 mm | Plate must end inside it (20 + 415 = 435) |
 
-With those values the pocket sits at **X = 99.5 → 118.5 mm** and runs the full
+The plate runs from 20 to 435 mm from the rear wall, so the 440 mm case leaves
+5 mm at the front. With those values the pocket sits at **X = 119.5 → 138.5 mm**
+(307–326 mm from the rear wall) and runs the full
 width of the plate. It only removes material from the two side rails beside the
 airflow cutout, which drop to 4 mm thick for those 19 mm. The pocket makes the base
 **handed**: the −X end goes towards the rear wall. The bezel has no pocket.
@@ -97,19 +100,16 @@ values as defaults and prints a warning, so nothing is silently changed.
    (`validate()` flags this). A single split at X = 0 (`split_x=(0,)`) gives two
    217.5 mm halves (incl. lap) that fit the bed, with one joint instead of two and
    clear of all holes. The spec's ±108.75 is kept as the default.
-4. **The joint at X = +108.75 runs straight through the rail pocket.** The lap
-   spans 98.75–118.75 and the pocket 99.5–118.5, so the right-hand joint loses almost
-   all of its overlap in the base. `validate()` flags this. A single split at
-   X = 0 (issue 3) is clear of both the pocket and the holes.
-5. **Where the plate sits relative to the rear wall isn't measured.** The rail is
-   measured from the *outside* of the rear wall, and the supplied script assumed the
-   plate's −X edge is flush with that face (`rear_wall_to_plate = 0`). The plate sits
-   inside the case, so it starts at least one wall thickness in, plus any lip or
-   rolled edge, and the pocket shifts by the same amount. Measure from the outside
-   rear face to where the plate's back edge will sit. From the photos the lid is
-   ≈ 437 × 200 mm ([case-measurements.md](case-measurements.md)), so the 415 × 145 mm
-   plate fits with ≈ 20 mm to spare lengthwise. The exact offset still matters,
-   because the pocket only has 1 mm of play on each side.
+4. **The joint at X = +108.75 ends 0.75 mm before the rail pocket.** With the plate
+   20 mm in from the rear wall, the pocket is at 119.5–138.5 and the right-hand lap
+   ends at 118.75. In the base, that leaves the lap's top half hanging off a 0.75 mm
+   wall above a 4 mm floor. `validate()` wants at least `joint_pocket_margin` = 10 mm
+   between them. A single split at X = 0 (issue 3) is well clear of both the pocket
+   and the holes.
+5. **Plate position (resolved).** The rear 20 mm of the case is reserved for the
+   PSU, so the plate starts 20 mm in from the outside of the rear wall
+   (`rear_wall_to_plate = 20`) and ends at 435 mm, inside the 440 mm case. The
+   pocket only has 1 mm of play on each side, so a test fit is still worthwhile.
 6. **Front of the radiator runs into the 5.25" drive cage, so the bays must be
    empty.** The cage runs from about 285 mm from the rear to the front frame. A test
    fit shows a 120 mm radiator drops down between the cage side walls, under the

@@ -39,11 +39,13 @@ check(any("fall entirely inside" in m for m in aio.validate(SPEC)),
 check(aio.validate(WEBBED) == [], "recommended fixes pass validation: %s" % aio.validate(WEBBED))
 check(sorted({round(x, 3) for x, _ in SPEC.hole_positions()})
       == [-172.5, -67.5, -52.5, 52.5, 67.5, 172.5], "hole X positions on a 120 mm fan pitch")
-check(all(close(a, b) for a, b in zip(SPEC.pocket_x_range(), (99.5, 118.5))),
-      "rail pocket at X=%s (rail 308..325 from rear wall + 1 mm each side)"
+check(all(close(a, b) for a, b in zip(SPEC.pocket_x_range(), (119.5, 138.5))),
+      "rail pocket at X=%s (rail 308..325 from rear wall, plate 20 mm in, +1 mm each side)"
       % (SPEC.pocket_x_range(),))
 check(any("rail pocket at" in m for m in aio.validate(SPEC)),
-      "spec joint at X=108.75 is flagged for running through the rail pocket")
+      "spec joint at X=108.75 is flagged for ending 0.75 mm from the rail pocket")
+check(any("past the" in m for m in aio.validate(aio.AIOBracketParams(rear_wall_to_plate=30.0))),
+      "plate running past the front of the case is flagged")
 
 for variant in aio.VARIANTS:
     t = SPEC.thickness(variant)

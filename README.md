@@ -28,12 +28,13 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 - Airflow cutout 365 × 121 mm.
 - Three 120 mm fans on a 120 mm pitch, 105 × 105 mm hole pattern, 4.5 mm holes
   (M4 / 6-32), at Y = ±52.5 mm and X = ±52.5, ±67.5, ±172.5 mm.
+- Plate sits 20–435 mm from the outside of the rear wall (rear 20 mm reserved for the PSU).
 - Base: 6 mm deep × 19 mm pocket over the lid's 5 mm × 17 mm support rail (308–325 mm from the outside of the rear wall).
 - Split with shiplap joints at X = ±108.75 mm into 98.75 / 217.5 / 98.75 mm segments.
 
 > **Heads up:** as specified, the 121 mm cutout leaves no material around the fan
 > holes, so the radiator has nothing to screw into. The script warns about this.
-> The right-hand joint also runs through the rail pocket. See
+> The right-hand joint also ends right at the rail pocket. See
 > [open design issues](docs/aio-360-bracket.md#open-design-issues) for these and the
 > other things to decide or measure.
 
