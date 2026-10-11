@@ -13,7 +13,8 @@ Directions: **rear** = I/O and exhaust-fan wall, **front** = drive bays.
 | Dimension | Value | Source |
 |---|---|---|
 | Length (front–back) | ≈ 437 mm | Photo: 17¼ in, hook over the end flange |
-| Width (side–side) | ≈ 200 mm | Photo |
+| Width (side–side), outside | ≈ 200 mm | Photo |
+| Width between the side flanges (inside) | ≈ 192 mm | Photo, tape across the flanges |
 | Construction | Flat steel sheet with folded flanges on all four edges | Photo |
 
 ## Chassis
@@ -21,7 +22,8 @@ Directions: **rear** = I/O and exhaust-fan wall, **front** = drive bays.
 | Dimension | Value | Source |
 |---|---|---|
 | Length, outside rear → front frame | ≈ 440 mm | Photo |
-| Width at the top | ≈ 190–207 mm | Photos (the cross support is ≈ 190 mm long) |
+| Width at the top, outside | ≈ 207 mm | Photo |
+| Width at the top, inside (rear frame) | ≈ 195 mm | Photo, close-up of the tape at the edge |
 
 ## Cross support under the lid
 
@@ -37,7 +39,9 @@ the 5.25" drive cage's rear frame.
 ## 5.25" drive cage
 
 It sits under the front of the lid, from roughly **285 mm from the rear to the
-front frame (≈ 440 mm)**, and reaches up to the cross support (photo). A test fit
+front frame (≈ 440 mm)**. Its side walls stop at the cross support, which sits on
+top of them, so they end ≈ 5 mm below the lid. Inside width between the walls is
+roughly 148–150 mm (rough photo estimate; 5.25" bays are normally ≈ 148 mm). A test fit
 shows a 120 mm wide radiator drops down between its side walls, so only drives in
 the top bays get in the way. See open issue 6 in [aio-360-bracket.md](aio-360-bracket.md).
 
@@ -48,9 +52,8 @@ relocated (open issue 7 in [aio-360-bracket.md](aio-360-bracket.md)).
 
 ## Still to measure
 
-- Lid flange height and the inside length/width between the flanges. The base
-  plate has to fit between them.
-- Inside width of the drive cage at the top (must be > 145 mm for the base plate),
-  and whether its side walls reach the lid.
+- Lid flange height and the inside length between the end flanges.
+- Inside width of the drive cage at the top, measured directly. The bottom 5 mm of
+  the 10 mm base plate sits between the cage walls, so it must be > 145 mm.
 - Height from the lid to the top of the motherboard tray / tallest board
   component, for radiator + fan clearance.

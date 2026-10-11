@@ -114,10 +114,12 @@ values as defaults and prints a warning, so nothing is silently changed.
    empty.** The cage runs from about 285 mm from the rear to the front frame. A test
    fit shows a 120 mm radiator drops down between the cage side walls, under the
    cross support. So the cage frame isn't in the way, but any drive in the top bays
-   is. Still to check: the 145 mm base plate also reaches into the cage zone, so the
-   cage's inside width at the top has to be more than 145 mm (5.25" bays are usually
-   ≈ 148 mm, which leaves only ≈ 1.5 mm per side). If the walls reach the lid,
-   either confirm that width or narrow the plate in that zone.
+   is. Still to check: the cage walls stop at the cross support, ≈ 5 mm below the
+   lid, so the lower 5 mm of the 10 mm base plate sits between them over the front
+   ≈ 130 mm. The cage's inside width there has to be more than 145 mm. 5.25" bays
+   are usually ≈ 148 mm, which leaves only ≈ 1.5 mm per side. Either confirm that
+   width or step the plate narrower in that zone. Width elsewhere is fine: the lid
+   is ≈ 192 mm and the chassis ≈ 195 mm wide inside.
 7. **The power supply is in the way.** A top-mounted ATX PSU sits right where the
    rear end of the radiator goes. It needs to move, e.g. to the bottom of the case
    or to the freed-up drive bay area. This is outside the bracket itself, but the
