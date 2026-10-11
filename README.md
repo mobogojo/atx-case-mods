@@ -25,18 +25,16 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 ### 360 mm AIO bracket at a glance
 
 - Plate 415 × 145 mm (fits a 395–400 mm AIO body; 12.5 mm border outside a 120 mm fan).
-- Airflow cutout 365 × 121 mm.
+- Airflow cutout 365 × 94 mm (leaves a ≈ 3 mm web around the fan holes).
 - Three 120 mm fans on a 120 mm pitch, 105 × 105 mm hole pattern, 4.5 mm holes
   (M4 / 6-32), at Y = ±52.5 mm and X = ±52.5, ±67.5, ±172.5 mm.
 - Plate sits 20–435 mm from the outside of the rear wall (rear 20 mm reserved for the PSU).
 - Base: 6 mm deep × 19 mm pocket over the lid's 5 mm × 17 mm support rail (308–325 mm from the outside of the rear wall).
-- Split with shiplap joints at X = ±108.75 mm into 98.75 / 217.5 / 98.75 mm segments.
+- Each plate prints as two 217.3 mm pieces (Rear / Front) joined by a shiplap joint at
+  the middle; only the front base piece has the rail pocket.
 
-> **Heads up:** as specified, the 121 mm cutout leaves no material around the fan
-> holes, so the radiator has nothing to screw into. The script warns about this.
-> The right-hand joint also ends right at the rail pocket. See
-> [open design issues](docs/aio-360-bracket.md#open-design-issues) for these and the
-> other things to decide or measure.
+Still open: the drive cage (empty bays, or removed) and where the PSU mounts. See
+[docs/aio-360-bracket.md](docs/aio-360-bracket.md#still-open).
 
 ## Repository layout
 
@@ -60,7 +58,7 @@ import sys; sys.path.insert(0, "/path/to/atx-case-mods/blender")
 import build
 build.build_part("aio_360_bracket", variant="all", segmented=True)
 # override any dimension:
-build.build_part("aio_360_bracket", variant="base", cutout_w=94.0)
+build.build_part("aio_360_bracket", variant="base", pocket_depth=6.5)
 ```
 
 Calling `build_part` again rebuilds just that part's collection

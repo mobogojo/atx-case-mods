@@ -43,12 +43,13 @@ front frame (≈ 440 mm)**. Its side walls stop at the cross support, which sits
 top of them, so they end ≈ 5 mm below the lid. Inside width between the walls is
 roughly 148–150 mm (rough photo estimate; 5.25" bays are normally ≈ 148 mm). A test fit
 shows a 120 mm wide radiator drops down between its side walls, so only drives in
-the top bays get in the way. See open issue 6 in [aio-360-bracket.md](aio-360-bracket.md).
+the top bays get in the way. See "Still open" in [aio-360-bracket.md](aio-360-bracket.md#still-open).
 
 ## Power supply
 
 The stock PSU sits top-rear, where the radiator's rear end goes, so it has to be
-relocated (open issue 7 in [aio-360-bracket.md](aio-360-bracket.md)).
+relocated. The rear 20 mm of the case is reserved for it, and the bracket starts
+behind that.
 
 | Dimension | Value | Source |
 |---|---|---|

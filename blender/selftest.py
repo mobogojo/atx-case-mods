@@ -28,15 +28,14 @@ def close(a, b, tol=1e-3):
     return abs(a - b) <= tol
 
 
-# Spec values exactly as given, plus the recommended fixes (holes get material,
-# single joint clear of the rail pocket).
-SPEC = aio.AIOBracketParams()
-WEBBED = aio.AIOBracketParams(cutout_w=94.0, split_x=(0.0,))
+# The originally supplied values (which validate() should flag) and the defaults.
+SPEC = aio.AIOBracketParams(cutout_w=121.0, split_x=(-108.75, 108.75))
+WEBBED = aio.AIOBracketParams()
 
 print("validate()")
 check(any("fall entirely inside" in m for m in aio.validate(SPEC)),
       "spec cutout (121 mm) is flagged for swallowing the fan holes")
-check(aio.validate(WEBBED) == [], "recommended fixes pass validation: %s" % aio.validate(WEBBED))
+check(aio.validate(WEBBED) == [], "defaults pass validation: %s" % aio.validate(WEBBED))
 check(sorted({round(x, 3) for x, _ in SPEC.hole_positions()})
       == [-172.5, -67.5, -52.5, 52.5, 67.5, 172.5], "hole X positions on a 120 mm fan pitch")
 check(all(close(a, b) for a, b in zip(SPEC.pocket_x_range(), (119.5, 138.5))),
@@ -49,7 +48,7 @@ check(any("past the" in m for m in aio.validate(aio.AIOBracketParams(rear_wall_t
 
 for variant in aio.VARIANTS:
     t = SPEC.thickness(variant)
-    for params, label in ((SPEC, "spec"), (WEBBED, "cutout_w=94, split_x=(0,)")):
+    for params, label in ((SPEC, "original spec"), (WEBBED, "defaults")):
         print("build %s / %s" % (variant, label))
         with tempfile.TemporaryDirectory() as tmp:
             whole = aio.build(params, variant=variant, export_dir=tmp)[0]

@@ -32,7 +32,7 @@ def build_part(part, variant=None, segmented=False, export_dir=None, strict=Fals
     """Build one part; ``variant`` may be a name, 'all' or None (first variant).
 
     Any keyword in ``overrides`` replaces the matching field of the part's params,
-    e.g. ``build_part("aio_360_bracket", cutout_w=94.0)``.
+    e.g. ``build_part("aio_360_bracket", pocket_depth=6.5)``.
     """
     reload_modules()
     from parts import PARTS

@@ -16,7 +16,7 @@ Usage (inside Blender, with <repo>/blender on sys.path):
     from parts import aio_360_bracket as aio
     aio.build()                                   # base plate, one piece
     aio.build(variant="bezel", segmented=True)    # bezel split for printing
-    aio.build(AIOBracketParams(cutout_w=94.0))    # override any dimension
+    aio.build(AIOBracketParams(pocket_depth=6.5)) # override any dimension
 """
 
 from dataclasses import dataclass
@@ -38,7 +38,7 @@ class AIOBracketParams:
 
     # Airflow opening (single rectangular slot, centred)
     cutout_l: float = 365.0
-    cutout_w: float = 121.0
+    cutout_w: float = 94.0     # < 100.5 so the fan holes keep a ~3 mm web (spec had 121)
 
     # Fan / radiator mounting grid
     fan_count: int = 3
@@ -58,7 +58,7 @@ class AIOBracketParams:
     pocket_clearance: float = 2.0      # 17 -> 19 mm pocket: room to adjust along X
 
     # Print segmentation (shiplap joints along X)
-    split_x: Tuple[float, ...] = (-108.75, 108.75)
+    split_x: Tuple[float, ...] = (0.0,)  # one joint, clear of holes and pocket
     lap_length: float = 20.0      # overlap length of each half-lap joint
     joint_clearance: float = 0.2  # gap left on the vertical faces of each joint
     joint_pocket_margin: float = 10.0  # solid material kept between a lap and the pocket
@@ -271,7 +271,7 @@ def _segment_labels(n):
     if n == 1:
         return ["Full"]
     if n == 2:
-        return ["Left", "Right"]
+        return ["Rear", "Front"]
     if n == 3:
-        return ["Left", "Center", "Right"]
+        return ["Rear", "Center", "Front"]
     return ["Part%d" % (i + 1) for i in range(n)]
