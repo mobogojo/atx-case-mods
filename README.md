@@ -14,7 +14,8 @@ sandwich with a 10 mm structural base under the top panel and a 4 mm cosmetic be
 above it. The base has a pocket that steps over the support rail under the middle
 of the lid, so it sits flush against the steel. Both plates are split into
 interlocking segments so they print on a 305 mm (Airwolf) bed.
-An ATX case top template that the bracket mounts into is next.
+An ATX case top template that the bracket mounts into is next. Donor case
+measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 
 | Part | Module | Variants | Spec |
 |---|---|---|---|
@@ -44,7 +45,7 @@ blender/
   selftest.py           geometry checks (manifold, size, volume, bed fit)
   casekit/              shared helpers: mm units, collections, primitives, booleans, STL
   parts/                one module per part, registered in parts/__init__.py
-docs/                   per-part specs and design notes
+docs/                   per-part specs, design notes and donor case measurements
 CLAUDE.md               conventions for Claude when adding or changing parts
 ```
 

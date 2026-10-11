@@ -106,9 +106,17 @@ values as defaults and prints a warning, so nothing is silently changed.
    plate's −X edge is flush with that face (`rear_wall_to_plate = 0`). The plate sits
    inside the case, so it starts at least one wall thickness in, plus any lip or
    rolled edge, and the pocket shifts by the same amount. Measure from the outside
-   rear face to where the plate's back edge will sit. Also measure the lid's inside
-   length, to confirm the 415 mm plate fits front to back.
-6. **The supplied pocket script had a few bugs.** These are fixed in the code:
+   rear face to where the plate's back edge will sit. From the photos the lid is
+   ≈ 437 × 200 mm ([case-measurements.md](case-measurements.md)), so the 415 × 145 mm
+   plate fits with ≈ 20 mm to spare lengthwise. The exact offset still matters,
+   because the pocket only has 1 mm of play on each side.
+6. **The radiator would hang over the 5.25" drive cage.** The cage runs from about
+   285 mm from the rear to the front frame and reaches up to the cross support. A
+   415 mm plate starting at the rear runs to ≈ 415 mm, and the radiator (≈ 27 mm) plus
+   fans (25 mm) hang ≈ 52 mm below it. So the front ~130 mm of the radiator would sit
+   on top of the cage. Either the cage comes out, or the radiator can't go under
+   the lid in that zone.
+7. **The supplied pocket script had a few bugs.** These are fixed in the code:
    - all of the clearance went on one side of the rail instead of being split evenly;
    - it resized the base by picking `bpy.context.active_object`, which `select_set`
      doesn't change, so it would scale whatever object happened to be active. The
