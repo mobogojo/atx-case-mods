@@ -28,20 +28,26 @@ def close(a, b, tol=1e-3):
     return abs(a - b) <= tol
 
 
-# Spec values exactly as given, plus a variant whose holes actually get material.
+# Spec values exactly as given, plus the recommended fixes (holes get material,
+# single joint clear of the rail pocket).
 SPEC = aio.AIOBracketParams()
-WEBBED = aio.AIOBracketParams(cutout_w=94.0)
+WEBBED = aio.AIOBracketParams(cutout_w=94.0, split_x=(0.0,))
 
 print("validate()")
 check(any("fall entirely inside" in m for m in aio.validate(SPEC)),
       "spec cutout (121 mm) is flagged for swallowing the fan holes")
-check(aio.validate(WEBBED) == [], "cutout_w=94 passes validation: %s" % aio.validate(WEBBED))
+check(aio.validate(WEBBED) == [], "recommended fixes pass validation: %s" % aio.validate(WEBBED))
 check(sorted({round(x, 3) for x, _ in SPEC.hole_positions()})
       == [-172.5, -67.5, -52.5, 52.5, 67.5, 172.5], "hole X positions on a 120 mm fan pitch")
+check(all(close(a, b) for a, b in zip(SPEC.pocket_x_range(), (100.0, 118.0))),
+      "rail pocket at X=%s (rail 308..325 from rear wall + 0.5 each side)"
+      % (SPEC.pocket_x_range(),))
+check(any("rail pocket at" in m for m in aio.validate(SPEC)),
+      "spec joint at X=108.75 is flagged for running through the rail pocket")
 
 for variant in aio.VARIANTS:
     t = SPEC.thickness(variant)
-    for params, label in ((SPEC, "spec"), (WEBBED, "cutout_w=94")):
+    for params, label in ((SPEC, "spec"), (WEBBED, "cutout_w=94, split_x=(0,)")):
         print("build %s / %s" % (variant, label))
         with tempfile.TemporaryDirectory() as tmp:
             whole = aio.build(params, variant=variant, export_dir=tmp)[0]
@@ -50,6 +56,9 @@ for variant in aio.VARIANTS:
             check(all(close(a, b) for a, b in zip(st["size"], (415.0, 145.0, t))),
                   "whole plate size %s" % (st["size"],))
             frame = (415.0 * 145.0 - params.cutout_l * params.cutout_w) * t
+            if variant == "base":  # pocket only crosses the side rails beside the cutout
+                px0, px1 = params.pocket_x_range()
+                frame -= (px1 - px0) * (145.0 - params.cutout_w) * params.pocket_depth
             hole_area = 3.14159265 * (params.hole_dia / 2) ** 2
             n_holes = 0 if params is SPEC else len(params.hole_positions())
             check(abs(st["volume_mm3"] - (frame - n_holes * hole_area * t)) < 0.01 * frame,
@@ -57,7 +66,8 @@ for variant in aio.VARIANTS:
             check(os.path.getsize(os.path.join(tmp, whole.name + ".stl")) > 84, "STL written")
 
             segs = aio.build(params, variant=variant, segmented=True)
-            check(len(segs) == 3, "3 segments")
+            n_segs = len(params.split_x) + 1
+            check(len(segs) == n_segs, "%d segments" % n_segs)
             seg_stats = [ck.mesh_stats(s) for s in segs]
             check(all(s["non_manifold_edges"] == 0 for s in seg_stats), "segments are manifold")
             total = sum(s["volume_mm3"] for s in seg_stats)

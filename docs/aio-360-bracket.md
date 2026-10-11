@@ -1,8 +1,9 @@
 # 360 mm AIO radiator bracket
 
 A two-plate "sandwich" that mounts a 360 mm AIO radiator (3 × 120 mm fans) to the
-top of an old ATX case: an **8 mm structural base** under the case top panel, and a
-**4 mm cosmetic bezel** on top. Built by
+top of an old ATX case: a **10 mm structural base** under the case top panel, and a
+**4 mm cosmetic bezel** on top. The base has a pocket in its lid-facing face that
+steps over the lid's support rail, so the rest of it sits flush on the steel. Built by
 [`blender/parts/aio_360_bracket.py`](../blender/parts/aio_360_bracket.py); every
 number below is a field of `AIOBracketParams`.
 
@@ -17,7 +18,7 @@ face. **X** runs along the radiator (length), **Y** across it (width), **Z** up.
 |---|---|---|---|
 | Plate length (X) | `length` | 415 mm | Fits a 395–400 mm AIO body incl. end-tank tolerance |
 | Plate width (Y) | `width` | 145 mm | 12.5 mm clamping border outside a 120 mm fan |
-| Base thickness | `base_thickness` | 8 mm | Rigidity for ABS |
+| Base thickness | `base_thickness` | 10 mm | 5.5 mm rail pocket + 4.5 mm floor under it |
 | Bezel thickness | `bezel_thickness` | 4 mm | Cosmetic trim |
 | Airflow cutout | `cutout_l` × `cutout_w` | 365 × 121 mm | Clears the airflow path |
 | Fans | `fan_count`, `fan_pitch` | 3 @ 120 mm centre-to-centre | Three 120 mm fans inline |
@@ -27,6 +28,34 @@ face. **X** runs along the radiator (length), **Y** across it (width), **Z** up.
 Fan holes are at **Y = ±52.5 mm** and, with a 120 mm pitch,
 **X = −172.5, −67.5, −52.5, +52.5, +67.5, +172.5 mm** (fan centres at −120, 0, +120;
 15 mm between the nearest holes of neighbouring fans).
+
+## Support rail pocket (base only)
+
+A 5 mm thick reinforcement rail hangs under the middle of the case lid, running
+across the plate (along Y). Measured at **308–325 mm from the case rear wall**.
+
+```
+ lid-facing face (Z = 10) ── sits flush on the steel lid
+ ┌──────────┐            ┌──────────┐
+ │          │  pocket    │          │   5.5 mm deep: clears the 5 mm rail by 0.5 mm
+ │          └────────────┘          │
+ │        4.5 mm floor              │
+ └──────────────────────────────────┘   Z = 0, radiator side
+            X = 100 → 118 (18 mm)
+```
+
+| Parameter | Field | Value | Notes |
+|---|---|---|---|
+| Rail span from rear wall | `rail_from_rear` | 308 → 325 mm | Measured (17 mm) |
+| Rail thickness | `rail_thickness` | 5 mm | Measured |
+| Pocket depth | `pocket_depth` | 5.5 mm | 0.5 mm clearance so it doesn't bind |
+| Pocket clearance | `pocket_clearance` | 1 mm | Added to the span, split 0.5 mm each side → 18 mm |
+| Rear wall → plate −X edge | `rear_wall_to_plate` | 0 mm | **Assumed**, see open issues |
+
+With those values the pocket sits at **X = 100 → 118 mm** and runs the full width
+of the plate. It only removes material from the two side rails beside the airflow
+cutout, which drop to 4.5 mm thick for those 18 mm. The pocket makes the base
+**handed**: the −X end goes towards the rear wall. The bezel has no pocket.
 
 ## Print segmentation (Airwolf 305 mm bed)
 
@@ -44,8 +73,9 @@ of a `lap_length` = 20 mm overlap and the right piece keeps the top half;
 
 ## Open design issues
 
-These were found while turning the original spec into code. The code keeps the
-spec values as defaults and prints a warning, so nothing is silently changed.
+These were found while turning the specs into code. The code keeps the spec
+values as defaults and prints a warning, so nothing is silently changed.
+`AIOBracketParams(cutout_w=94.0, split_x=(0,))` resolves all the warnings.
 
 1. **The 121 mm cutout swallows every fan hole.** Holes sit at Y = ±52.5 mm but the
    cutout reaches Y = ±60.5 mm (and X = ±182.5 mm, past the outermost holes at
@@ -66,13 +96,34 @@ spec values as defaults and prints a warning, so nothing is silently changed.
    (`validate()` flags this). A single split at X = 0 (`split_x=(0,)`) gives two
    217.5 mm halves (incl. lap) that fit the bed, with one joint instead of two and
    clear of all holes. The spec's ±108.75 is kept as the default.
+4. **The joint at X = +108.75 runs straight through the rail pocket.** The lap
+   spans 98.75–118.75 and the pocket 100–118, so the right-hand joint loses almost
+   all of its overlap in the base. `validate()` flags this. A single split at
+   X = 0 (issue 3) is clear of both the pocket and the holes.
+5. **7.5 mm pocket width vs. the 308–325 mm rail measurement.** The notes give the
+   rail as 7 mm wide (pocket 7.5 mm), but 325 − 308 = 17 mm, and the supplied script
+   cut an 18 mm pocket and never used the 7.5 mm value. The code uses the measured
+   308–325 span. **Please re-measure the rail width.** If it really is 7 mm, set
+   `rail_from_rear` to its actual start/end.
+6. **Where the plate sits relative to the rear wall isn't measured.** The supplied
+   script assumed the plate's −X edge touches the rear wall. That's kept as
+   `rear_wall_to_plate = 0`; measure it, because the pocket moves with it.
+7. **The supplied pocket script had a few bugs.** These are fixed in the code:
+   - all 1 mm of clearance went on one side (pocket 308–326 instead of 307.5–325.5);
+   - it resized the base by picking `bpy.context.active_object`, which `select_set`
+     doesn't change, so it would scale whatever object happened to be active. The
+     code builds the base at 10 mm directly;
+   - the ASCII diagram labels the 4.5 mm layer as the face against the lid. It's
+     actually the floor *under* the pocket; the lid-facing face is the full-height
+     surface around the pocket.
 
 ## Building
 
 ```python
 import sys; sys.path.insert(0, "/path/to/atx-case-mods/blender")
 import build
-build.build_part("aio_360_bracket", variant="all", segmented=True, cutout_w=94.0)
+build.build_part("aio_360_bracket", variant="all", segmented=True,
+                 cutout_w=94.0, split_x=(0.0,))
 ```
 
 or headless: `blender -b -P blender/build.py -- --variant all --segmented --export out/`.

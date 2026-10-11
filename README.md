@@ -10,13 +10,15 @@ build them directly in Blender through the
 millimetre, and anyone can rebuild them with different dimensions.
 
 The first part is a **360 mm AIO radiator bracket** for the case top: a two-plate
-sandwich with an 8 mm structural base under the top panel and a 4 mm cosmetic bezel
-above it, split into interlocking segments so it prints on a 305 mm (Airwolf) bed.
+sandwich with a 10 mm structural base under the top panel and a 4 mm cosmetic bezel
+above it. The base has a pocket that steps over the support rail under the middle
+of the lid, so it sits flush against the steel. Both plates are split into
+interlocking segments so they print on a 305 mm (Airwolf) bed.
 An ATX case top template that the bracket mounts into is next.
 
 | Part | Module | Variants | Spec |
 |---|---|---|---|
-| 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (8 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
+| 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (10 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
 | ATX case top template | *planned* | | |
 
 ### 360 mm AIO bracket at a glance
@@ -25,12 +27,14 @@ An ATX case top template that the bracket mounts into is next.
 - Airflow cutout 365 × 121 mm.
 - Three 120 mm fans on a 120 mm pitch, 105 × 105 mm hole pattern, 4.5 mm holes
   (M4 / 6-32), at Y = ±52.5 mm and X = ±52.5, ±67.5, ±172.5 mm.
+- Base: 5.5 × 18 mm pocket over the lid's 5 mm support rail (308–325 mm from the rear wall).
 - Split with shiplap joints at X = ±108.75 mm into 98.75 / 217.5 / 98.75 mm segments.
 
 > **Heads up:** as specified, the 121 mm cutout leaves no material around the fan
 > holes, so the radiator has nothing to screw into. The script warns about this.
-> See [open design issues](docs/aio-360-bracket.md#open-design-issues) for this and
-> two other things to decide.
+> The right-hand joint also runs through the rail pocket. See
+> [open design issues](docs/aio-360-bracket.md#open-design-issues) for these and the
+> other things to decide or measure.
 
 ## Repository layout
 

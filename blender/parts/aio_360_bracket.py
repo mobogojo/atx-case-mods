@@ -1,8 +1,13 @@
-"""360 mm AIO radiator bracket: 8 mm structural base + 4 mm cosmetic bezel.
+"""360 mm AIO radiator bracket: 10 mm structural base + 4 mm cosmetic bezel.
 
 The two plates sandwich the case top panel: the base sits under the panel and the
 radiator/fans screw through it, the bezel sits on top for a clean look. Both can be
 split into shiplap (half-lap) segments so they fit a 305 mm print bed.
+
+The case lid has a 5 mm thick support rail running across its underside (along Y).
+The base has a pocket in its top (lid-facing) face that steps over that rail, so the
+rest of the base sits flush against the steel. The pocket makes the base handed: its
+-X end goes towards the case rear wall.
 
 Coordinate system (mm): origin at the plate centre on its bottom face, X along the
 radiator length, Y across it, Z up. Full spec and design notes: docs/aio-360-bracket.md
@@ -28,7 +33,7 @@ class AIOBracketParams:
     # Plate footprint
     length: float = 415.0         # X; fits a 395-400 mm radiator incl. end tanks
     width: float = 145.0          # Y; 12.5 mm border outside a 120 mm fan
-    base_thickness: float = 8.0   # lower structural bracket (ABS rigidity)
+    base_thickness: float = 10.0  # lower structural bracket: 5.5 pocket + 4.5 floor
     bezel_thickness: float = 4.0  # upper cosmetic trim
 
     # Airflow opening (single rectangular slot, centred)
@@ -41,6 +46,14 @@ class AIOBracketParams:
     fan_hole_spacing: float = 105.0   # square hole pattern of a 120 mm fan
     hole_dia: float = 4.5             # clearance for M4 / 6-32 radiator screws
     hole_segments: int = 48
+
+    # Pocket over the lid's support rail (base only). The rail runs across the plate
+    # (along Y) on the lid underside; the pocket opens on the base's top face (Z=t).
+    rail_from_rear: Tuple[float, float] = (308.0, 325.0)  # measured rail span from rear wall
+    rail_thickness: float = 5.0        # measured; how far the rail hangs below the lid
+    rear_wall_to_plate: float = 0.0    # rear wall -> plate's -X edge (ASSUMED, not measured)
+    pocket_depth: float = 5.5          # rail thickness + 0.5 so it doesn't bind
+    pocket_clearance: float = 1.0      # added to the rail span, split evenly both sides
 
     # Print segmentation (shiplap joints along X)
     split_x: Tuple[float, ...] = (-108.75, 108.75)
@@ -64,6 +77,14 @@ class AIOBracketParams:
                 for cx in self.fan_centers()
                 for dx in (-h, h)
                 for dy in (-h, h)]
+
+    def pocket_x_range(self):
+        """(x0, x1) of the rail pocket in plate coordinates, centred on the rail."""
+        x_edge = -self.length / 2.0 + self.rear_wall_to_plate
+        r0, r1 = self.rail_from_rear
+        half = (r1 - r0 + self.pocket_clearance) / 2.0
+        centre = x_edge + (r0 + r1) / 2.0
+        return centre - half, centre + half
 
     def segment_bounds(self):
         """[(x_start, x_end), ...] of each printed segment, split at ``split_x``."""
@@ -117,11 +138,33 @@ def validate(p):
             if lo - r < x < hi + r:
                 problems.append("Joint at X=%.2f overlaps the fan hole at (%.2f, %.2f)."
                                 % (s, x, y))
+
+    # Rail pocket (base only)
+    px0, px1 = p.pocket_x_range()
+    if p.pocket_depth <= p.rail_thickness:
+        problems.append("Pocket depth %.2f does not clear the %.2f mm rail."
+                        % (p.pocket_depth, p.rail_thickness))
+    if p.pocket_depth >= p.base_thickness:
+        problems.append("Pocket depth %.2f cuts through the %.2f mm base."
+                        % (p.pocket_depth, p.base_thickness))
+    if not (-p.length / 2.0 < px0 and px1 < p.length / 2.0):
+        problems.append("Rail pocket X=%.2f..%.2f runs off the plate." % (px0, px1))
+    for x, y in p.hole_positions():
+        if px0 - r < x < px1 + r:
+            problems.append("Rail pocket X=%.2f..%.2f overlaps the fan hole at (%.2f, %.2f)."
+                            % (px0, px1, x, y))
+    for s in p.split_x:
+        lo, hi = s - p.lap_length / 2.0, s + p.lap_length / 2.0
+        if px0 < hi and lo < px1:
+            problems.append(
+                "Joint at X=%.2f (lap %.2f..%.2f) runs through the base plate's rail pocket at "
+                "X=%.2f..%.2f, which removes most of the lap. Move the joint, e.g. "
+                "split_x=(0,)." % (s, lo, hi, px0, px1))
     return problems
 
 
 def build_plate(p, variant="base", name=None):
-    """Build one solid plate (unlinked) with cutout and fan holes."""
+    """Build one solid plate (unlinked) with cutout, fan holes and (base) rail pocket."""
     t = p.thickness(variant)
     e = ck.EPS
     plate = ck.box(name or "%s_%s" % (PART_NAME, variant.capitalize()),
@@ -134,6 +177,12 @@ def build_plate(p, variant="base", name=None):
     holes = [ck.cylinder("cutter_hole", x, y, -e, t + e, p.hole_dia, p.hole_segments)
              for x, y in p.hole_positions()]
     ck.boolean(plate, ck.join_meshes("cutter_holes", holes))
+
+    if variant == "base":
+        px0, px1 = p.pocket_x_range()
+        pocket = ck.box("cutter_rail_pocket", px0, px1, -p.width / 2 - e, p.width / 2 + e,
+                        t - p.pocket_depth, t + e)
+        ck.boolean(plate, pocket)
     return plate
 
 
