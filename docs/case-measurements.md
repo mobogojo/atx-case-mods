@@ -50,6 +50,24 @@ the top bays get in the way. See open issue 6 in [aio-360-bracket.md](aio-360-br
 The stock PSU sits top-rear, where the radiator's rear end goes, so it has to be
 relocated (open issue 7 in [aio-360-bracket.md](aio-360-bracket.md)).
 
+| Dimension | Value | Source |
+|---|---|---|
+| PSU envelope incl. connected cables | 150 × 86 × **200 mm** (W × H × L) | Measured in a reference build (≥ 195 mm, rounded up) |
+| Space under the radiator stack | lid → 62 mm down (10 bracket + 27 radiator + 25 fans) | Bracket design |
+| Old drive cage zone, front–back | ≈ 150 mm (≈ 285 mm from rear → front frame) | Photo |
+
+Where it can go once the drive cage is removed:
+
+- **Flat at the front, under the radiator:** doesn't fit. The PSU needs 200 mm of
+  length but the zone is ≈ 150 mm deep, and the case is ≈ 195 mm wide inside, so
+  it can't turn sideways either.
+- **Standing on end at the front:** takes 150 mm across × 86 mm front–back, which
+  fits. It needs ≈ 262 mm clear below the lid (62 + 200), away from the GPU.
+- **Flat on the case floor:** 200 mm front–back, if there's room below the GPU.
+
+Either way, the old PSU opening in the rear wall needs a cover plate, and a
+front-mounted PSU needs its own air intake.
+
 ## Still to measure
 
 - Lid flange height and the inside length between the end flanges.
@@ -57,3 +75,5 @@ relocated (open issue 7 in [aio-360-bracket.md](aio-360-bracket.md)).
   the 10 mm base plate sits between the cage walls, so it must be > 145 mm.
 - Height from the lid to the top of the motherboard tray / tallest board
   component, for radiator + fan clearance.
+- Case inside height (lid to floor), what sits below the 5.25" cage at the front
+  (3.5" cage?), and how far forward / how high the GPU reaches, to place the PSU.
