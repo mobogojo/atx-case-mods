@@ -27,7 +27,7 @@ An ATX case top template that the bracket mounts into is next.
 - Airflow cutout 365 × 121 mm.
 - Three 120 mm fans on a 120 mm pitch, 105 × 105 mm hole pattern, 4.5 mm holes
   (M4 / 6-32), at Y = ±52.5 mm and X = ±52.5, ±67.5, ±172.5 mm.
-- Base: 6 mm deep × 19 mm pocket over the lid's 5 mm × 17 mm support rail (308–325 mm from the rear wall).
+- Base: 6 mm deep × 19 mm pocket over the lid's 5 mm × 17 mm support rail (308–325 mm from the outside of the rear wall).
 - Split with shiplap joints at X = ±108.75 mm into 98.75 / 217.5 / 98.75 mm segments.
 
 > **Heads up:** as specified, the 121 mm cutout leaves no material around the fan

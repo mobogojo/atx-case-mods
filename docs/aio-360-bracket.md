@@ -32,7 +32,8 @@ Fan holes are at **Y = ±52.5 mm** and, with a 120 mm pitch,
 ## Support rail pocket (base only)
 
 A 5 mm thick, 17 mm wide reinforcement rail hangs under the middle of the case lid,
-running across the plate (along Y). Measured at **308–325 mm from the case rear wall**.
+running across the plate (along Y). Measured at **308–325 mm from the outside face of
+the case rear wall**.
 
 ```
  lid-facing face (Z = 10) ── sits flush on the steel lid
@@ -46,11 +47,11 @@ running across the plate (along Y). Measured at **308–325 mm from the case rea
 
 | Parameter | Field | Value | Notes |
 |---|---|---|---|
-| Rail span from rear wall | `rail_from_rear` | 308 → 325 mm | Measured and confirmed (17 mm) |
+| Rail span from rear wall | `rail_from_rear` | 308 → 325 mm | Measured from the outside rear face, confirmed (17 mm) |
 | Rail thickness | `rail_thickness` | 5 mm | Measured |
 | Pocket depth | `pocket_depth` | 6 mm | 1 mm clearance over the rail; 6.5 mm also fine (3.5 mm floor) |
 | Pocket clearance | `pocket_clearance` | 2 mm | Added to the span, 1 mm each side → 19 mm, room to adjust |
-| Rear wall → plate −X edge | `rear_wall_to_plate` | 0 mm | **Assumed**, see open issues |
+| Outside rear face → plate −X edge | `rear_wall_to_plate` | 0 mm | **Assumed**, see open issues |
 
 With those values the pocket sits at **X = 99.5 → 118.5 mm** and runs the full
 width of the plate. It only removes material from the two side rails beside the
@@ -100,9 +101,13 @@ values as defaults and prints a warning, so nothing is silently changed.
    spans 98.75–118.75 and the pocket 99.5–118.5, so the right-hand joint loses almost
    all of its overlap in the base. `validate()` flags this. A single split at
    X = 0 (issue 3) is clear of both the pocket and the holes.
-5. **Where the plate sits relative to the rear wall isn't measured.** The supplied
-   script assumed the plate's −X edge touches the rear wall. That's kept as
-   `rear_wall_to_plate = 0`; measure it, because the pocket moves with it.
+5. **Where the plate sits relative to the rear wall isn't measured.** The rail is
+   measured from the *outside* of the rear wall, and the supplied script assumed the
+   plate's −X edge is flush with that face (`rear_wall_to_plate = 0`). The plate sits
+   inside the case, so it starts at least one wall thickness in, plus any lip or
+   rolled edge, and the pocket shifts by the same amount. Measure from the outside
+   rear face to where the plate's back edge will sit. Also measure the lid's inside
+   length, to confirm the 415 mm plate fits front to back.
 6. **The supplied pocket script had a few bugs.** These are fixed in the code:
    - all of the clearance went on one side of the rail instead of being split evenly;
    - it resized the base by picking `bpy.context.active_object`, which `select_set`

@@ -49,9 +49,10 @@ class AIOBracketParams:
 
     # Pocket over the lid's support rail (base only). The rail runs across the plate
     # (along Y) on the lid underside; the pocket opens on the base's top face (Z=t).
-    rail_from_rear: Tuple[float, float] = (308.0, 325.0)  # measured 17 mm rail span
+    # Rail span measured from the OUTSIDE face of the case rear wall (17 mm wide).
+    rail_from_rear: Tuple[float, float] = (308.0, 325.0)
     rail_thickness: float = 5.0        # measured; how far the rail hangs below the lid
-    rear_wall_to_plate: float = 0.0    # rear wall -> plate's -X edge (ASSUMED, not measured)
+    rear_wall_to_plate: float = 0.0    # outside rear face -> plate's -X edge (NOT measured)
     pocket_depth: float = 6.0          # rail + 1 mm so it doesn't bind (6.5 also OK)
     pocket_clearance: float = 2.0      # 17 -> 19 mm pocket: room to adjust along X
 
