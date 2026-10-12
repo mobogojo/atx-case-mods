@@ -20,6 +20,7 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 | Part | Module | Variants | Spec |
 |---|---|---|---|
 | 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (10 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
+| PSU sleeve | `blender/parts/psu_sleeve.py` | `sleeve` | [docs/psu-sleeve.md](docs/psu-sleeve.md) |
 | ATX case top template | *planned* | | |
 
 ### 360 mm AIO bracket at a glance
@@ -33,8 +34,18 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 - Each plate prints as two 217.3 mm pieces (Rear / Front) joined by a shiplap joint at
   the middle; only the front base piece has the rail pocket.
 
-Still open: the drive cage (empty bays, or removed) and where the PSU mounts. See
+Still open: the drive cage (empty bays, or removed). See
 [docs/aio-360-bracket.md](docs/aio-360-bracket.md#still-open).
+
+### PSU sleeve at a glance
+
+With the radiator in the top of the case, the PSU moves to the rear 120 mm fan opening
+and lies on its side in a short printed sleeve.
+
+- Sleeve inside 87 × 151 mm (Corsair RM850, 86 × 150 mm, + 0.5 mm per side), 3 mm walls,
+  30 mm long, on a 125 × 168 × 3 mm flange.
+- A seat at the rear (10 mm top and sides, 3 mm bottom to clear the switch) stops the
+  PSU. The PSU's own screws go through the case wall and the seat, clamping everything.
 
 ## Repository layout
 
@@ -59,6 +70,7 @@ import build
 build.build_part("aio_360_bracket", variant="all", segmented=True)
 # override any dimension:
 build.build_part("aio_360_bracket", variant="base", pocket_depth=6.5)
+build.build_part("psu_sleeve")
 ```
 
 Calling `build_part` again rebuilds just that part's collection

@@ -4,6 +4,7 @@
 Exits non-zero on failure.
 """
 
+import math
 import os
 import sys
 import tempfile
@@ -14,6 +15,7 @@ import bpy  # noqa: E402
 
 import casekit as ck  # noqa: E402
 from parts import aio_360_bracket as aio  # noqa: E402
+from parts import psu_sleeve as ps  # noqa: E402
 
 failures = []
 
@@ -83,6 +85,41 @@ aio.build(WEBBED)
 aio.build(WEBBED)
 coll = bpy.data.collections["%s_Base" % aio.PART_NAME]
 check(len(coll.objects) == 1, "rebuilding replaces the old objects")
+
+# PSU sleeve
+print("psu_sleeve")
+PSU = ps.PSUSleeveParams()
+check(ps.validate(PSU) == [], "defaults pass validation: %s" % ps.validate(PSU))
+check(all(a > b for a, b in zip(PSU.inner(), PSU.psu_size[:2])),
+      "PSU %s fits inside %s" % (PSU.psu_size[:2], PSU.inner()))
+check(any("doesn't land" in m for m in ps.validate(ps.PSUSleeveParams(seat_sides=4.0))),
+      "PSU screw holes off a too-narrow seat are flagged")
+check(any("nut or screw head" in m
+          for m in ps.validate(ps.PSUSleeveParams(wall=8.0, fan_slot_holes=True))),
+      "fan-slot holes too close to a thick sleeve wall are flagged")
+ix, iy = PSU.inner()
+ox, oy = PSU.outer()
+fx, fy = PSU.flange_size
+t = PSU.flange_thickness
+sx0, sx1, sy0, sy1 = PSU.seat_opening()
+screws = len(PSU.psu_screw_holes) * math.pi * (PSU.psu_screw_dia / 2) ** 2 * t
+seat_plate = (fx * fy - (sx1 - sx0) * (sy1 - sy0)) * t - screws
+window = math.pi * (PSU.fan_window_dia / 2) ** 2 * PSU.wall
+cases = (
+    ("default 30 mm", PSU, seat_plate + (ox * oy - ix * iy) * (PSU.length - t)),
+    ("300 mm, fan +x", ps.PSUSleeveParams(length=300.0, fan_side="+x"),
+     seat_plate + (ox * oy - ix * iy) * (300.0 - t) - window),
+)
+for label, params, expected in cases:
+    with tempfile.TemporaryDirectory() as tmp:
+        obj = ps.build(params, export_dir=tmp)[0]
+        st = ck.mesh_stats(obj)
+        check(st["non_manifold_edges"] == 0, "sleeve (%s) is manifold" % label)
+        check(all(close(a, b) for a, b in zip(st["size"], (fx, fy, params.length))),
+              "sleeve (%s) size %s" % (label, st["size"]))
+        check(abs(st["volume_mm3"] - expected) < 0.01 * expected,
+              "sleeve (%s) volume %.0f ~ %.0f mm^3" % (label, st["volume_mm3"], expected))
+        check(os.path.getsize(os.path.join(tmp, obj.name + ".stl")) > 84, "sleeve STL written")
 
 print("\n%s" % ("ALL CHECKS PASSED" if not failures else "%d FAILURE(S)" % len(failures)))
 sys.exit(1 if failures else 0)
