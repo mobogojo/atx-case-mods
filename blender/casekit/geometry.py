@@ -4,8 +4,11 @@ Primitives return *unlinked* mesh objects. Cutters are never added to the scene,
 nothing is left behind if a script fails half way through.
 """
 
+import math
+
 import bmesh
 import bpy
+from mathutils import Matrix
 
 # Overshoot used for cutters so booleans never leave zero-thickness skins.
 EPS = 1.0
@@ -31,8 +34,14 @@ def box(name, x0, x1, y0, y1, z0, z1):
     return _object_from_bmesh(name, bm)
 
 
-def cylinder(name, x, y, z0, z1, diameter, segments=48):
-    """Z-axis cylinder centred on (x, y) spanning z0..z1."""
+def cylinder(name, x, y, z0, z1, diameter, segments=48, axis='Z'):
+    """Cylinder of ``diameter`` along ``axis``.
+
+    For axis 'Z' it is centred on (x, y) and spans z0..z1. For 'X' and 'Y' the
+    arguments are taken in the rotated frame: (x, y) are the two cross-axis
+    coordinates in X, Y, Z order with the long axis left out, and z0..z1 is the
+    span along the long axis. E.g. axis='X': x -> Y, y -> Z, z0..z1 -> X.
+    """
     bm = bmesh.new()
     bmesh.ops.create_cone(
         bm,
@@ -42,7 +51,20 @@ def cylinder(name, x, y, z0, z1, diameter, segments=48):
         radius2=diameter / 2.0,
         depth=abs(z1 - z0),
     )
-    bmesh.ops.translate(bm, verts=bm.verts, vec=(x, y, (z0 + z1) / 2.0))
+    mid = (z0 + z1) / 2.0
+    if axis == 'Z':
+        offset = (x, y, mid)
+    elif axis == 'X':
+        bmesh.ops.rotate(bm, verts=bm.verts, cent=(0, 0, 0),
+                         matrix=Matrix.Rotation(math.radians(90), 3, 'Y'))
+        offset = (mid, x, y)
+    elif axis == 'Y':
+        bmesh.ops.rotate(bm, verts=bm.verts, cent=(0, 0, 0),
+                         matrix=Matrix.Rotation(math.radians(90), 3, 'X'))
+        offset = (x, mid, y)
+    else:
+        raise ValueError("axis must be 'X', 'Y' or 'Z', got %r" % (axis,))
+    bmesh.ops.translate(bm, verts=bm.verts, vec=offset)
     return _object_from_bmesh(name, bm)
 
 

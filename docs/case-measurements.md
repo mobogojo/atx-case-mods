@@ -48,8 +48,9 @@ the top bays get in the way. See "Still open" in [aio-360-bracket.md](aio-360-br
 ## Power supply
 
 The stock PSU sits top-rear, where the radiator's rear end goes, so it has to be
-relocated. The rear 20 mm of the case is reserved for it, and the bracket starts
-behind that.
+relocated. The plan: the PSU lies on its side in a printed sleeve behind the rear
+120 mm fan opening ([psu-sleeve.md](psu-sleeve.md)). The rear 20 mm under the lid is
+kept clear, and the bracket starts behind that.
 
 | Dimension | Value | Source |
 |---|---|---|

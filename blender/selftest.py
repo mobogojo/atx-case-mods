@@ -4,6 +4,7 @@
 Exits non-zero on failure.
 """
 
+import math
 import os
 import sys
 import tempfile
@@ -14,6 +15,7 @@ import bpy  # noqa: E402
 
 import casekit as ck  # noqa: E402
 from parts import aio_360_bracket as aio  # noqa: E402
+from parts import psu_sleeve as ps  # noqa: E402
 
 failures = []
 
@@ -83,6 +85,35 @@ aio.build(WEBBED)
 aio.build(WEBBED)
 coll = bpy.data.collections["%s_Base" % aio.PART_NAME]
 check(len(coll.objects) == 1, "rebuilding replaces the old objects")
+
+# PSU sleeve
+print("psu_sleeve")
+PSU = ps.PSUSleeveParams()
+problems = ps.validate(PSU)
+check(problems and all("print height" in m for m in problems),
+      "only the (assumed) print-height warning at the defaults: %s" % problems)
+check(ps.validate(ps.PSUSleeveParams(length=250.0)) == [], "a 250 mm sleeve passes validation")
+check(all(a > b for a, b in zip(PSU.inner(), PSU.psu_size[:2])),
+      "PSU %s fits inside %s" % (PSU.psu_size[:2], PSU.inner()))
+check(any("nut or screw head" in m for m in ps.validate(ps.PSUSleeveParams(wall=8.0))),
+      "mounting holes too close to a thick sleeve wall are flagged")
+ix, iy = PSU.inner()
+ox, oy = PSU.outer()
+fx, fy = PSU.flange_size
+t = PSU.flange_thickness
+body = (fx * fy - ix * iy) * t + (ox * oy - ix * iy) * (PSU.length - t)
+body -= 4 * math.pi * (PSU.hole_dia / 2) ** 2 * t
+window = math.pi * (PSU.fan_window_dia / 2) ** 2 * PSU.wall
+for side, expected in (("+x", body - window), ("-x", body - window), ("none", body)):
+    with tempfile.TemporaryDirectory() as tmp:
+        obj = ps.build(ps.PSUSleeveParams(fan_side=side), export_dir=tmp)[0]
+        st = ck.mesh_stats(obj)
+        check(st["non_manifold_edges"] == 0, "sleeve (fan %s) is manifold" % side)
+        check(all(close(a, b) for a, b in zip(st["size"], (fx, fy, PSU.length))),
+              "sleeve size %s" % (st["size"],))
+        check(abs(st["volume_mm3"] - expected) < 0.01 * expected,
+              "sleeve (fan %s) volume %.0f ~ %.0f mm^3" % (side, st["volume_mm3"], expected))
+        check(os.path.getsize(os.path.join(tmp, obj.name + ".stl")) > 84, "sleeve STL written")
 
 print("\n%s" % ("ALL CHECKS PASSED" if not failures else "%d FAILURE(S)" % len(failures)))
 sys.exit(1 if failures else 0)

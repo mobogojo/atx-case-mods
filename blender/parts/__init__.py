@@ -5,8 +5,9 @@ Each part module exposes ``PART_NAME``, ``VARIANTS``, a params dataclass,
 Add new parts (e.g. the ATX case top template) here so ``build.py`` can find them.
 """
 
-from . import aio_360_bracket
+from . import aio_360_bracket, psu_sleeve
 
 PARTS = {
     "aio_360_bracket": aio_360_bracket,
+    "psu_sleeve": psu_sleeve,
 }
