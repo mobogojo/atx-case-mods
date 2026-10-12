@@ -54,7 +54,7 @@ class PSUSleeveParams:
     # case with the switch at the bottom: (from left edge, from top edge). Read off a
     # photo of the RM850 using ATX-style 6 mm / 16 mm offsets: measure before printing.
     psu_screw_holes: Tuple[Tuple[float, float], ...] = (
-        (16.0, 6.0), (80.0, 6.0), (6.0, 134.0), (80.0, 144.0))
+        (16.0, 6.0), (80.0, 6.0), (6.0, 121.5), (80.0, 144.0))
     psu_screw_dia: float = 4.0    # #6-32 clearance
     hole_segments: int = 32
 

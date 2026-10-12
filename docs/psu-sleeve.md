@@ -50,7 +50,7 @@ PSU's left edge, from its top edge):
 |---|---|---|---|
 | Top left | 16 mm | 6 mm | Top seat |
 | Top right | 80 mm | 6 mm | Right seat |
-| Left, low | 6 mm | 134 mm | Left seat |
+| Left, low | 6 mm | 121.5 mm | Left seat |
 | Bottom right | 80 mm | 144 mm | Right seat |
 
 Optional extras, both off by default: `fan_slot_holes=True` adds the 120 mm fan pattern
