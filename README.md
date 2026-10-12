@@ -14,7 +14,8 @@ sandwich with a 10 mm structural base under the top panel and a 4 mm cosmetic be
 above it. The base has a pocket that steps over the support rail under the middle
 of the lid, so it sits flush against the steel. Both plates are split into
 interlocking segments so they print on a 305 mm (Airwolf) bed.
-An ATX case top template that the bracket mounts into is next. Donor case
+An ATX case top template that the bracket mounts into is next. The PSU and donor
+case this was built around are in [docs/hardware.md](docs/hardware.md); raw donor case
 measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 
 | Part | Module | Variants | Spec |
