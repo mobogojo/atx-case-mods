@@ -1,25 +1,33 @@
 # PSU sleeve
 
-A printed sleeve that holds the PSU on its side behind the case's rear 120 mm fan
+A short printed sleeve that holds the PSU on its side behind the case's rear 120 mm fan
 opening. The radiator takes over the top of the case, where the PSU used to sit.
-Built by [`blender/parts/psu_sleeve.py`](../blender/parts/psu_sleeve.py); every
-number below is a field of `PSUSleeveParams`.
+Built by [`blender/parts/psu_sleeve.py`](../blender/parts/psu_sleeve.py); every number
+below is a field of `PSUSleeveParams`.
 
 ## How it fits
 
-- The **flange** sits against the inside of the rear wall, over the fan-opening area,
-  and bolts through the case's fan slots.
-- The **sleeve** runs forward into the case. The PSU slides in from the front, and its
-  rear face (switch, power socket, screw holes) ends flush with the flange.
-- Cut the rear-wall metal for the switch and socket. The PSU can then also be screwed
-  to the rear wall with its own four screws.
-- The front end is open for the cables.
+```
+   outside the case │ rear wall │ inside the case
+                    │           │
+          screws ──►│ ┌─seat────┤◄── PSU slides in from inside, stops on the seat
+                    │ │         │
+                    │ │  sleeve │ 30 mm
+```
+
+1. Cut the rear-wall metal for the PSU's switch, socket and vents, and drill its four
+   screw holes (the seat makes a handy drilling template).
+2. Put the sleeve against the inside of the rear wall, flange flat on the metal.
+3. Slide the PSU in from inside the case until its rear face stops on the seat.
+4. Screw the PSU's four screws in from outside: through the case wall, through the seat,
+   into the PSU. That clamps all three together, so the sleeve needs no other fixing.
 
 ## Coordinate system
 
 Millimetres. Origin at the centre of the flange on its rear face, which is also the
-print bed. **X** = across the case (the PSU's 86 mm side), **Y** = up in the case
-(the PSU's 150 mm side), **Z** = forward into the case.
+print bed (prints standing on the flange, no supports). **X** = across the case (the
+PSU's 86 mm side), **Y** = up in the case (the PSU's 150 mm side, switch and socket at
+the bottom), **Z** = forward into the case. Seen from outside, +X is to the left.
 
 ## Dimensions
 
@@ -29,28 +37,35 @@ print bed. **X** = across the case (the PSU's 86 mm side), **Y** = up in the cas
 | Clearance | `psu_clearance` | 0.5 mm per side | Slides in after printing |
 | Sleeve inside | (derived) | 87 × 151 mm | PSU + clearance |
 | Wall | `wall` | 3 mm | Sleeve outside 93 × 157 mm |
-| Length | `length` | 300 mm | Flange rear face → open front end |
-| Flange | `flange_size`, `flange_thickness` | 125 × 168 × 4 mm | Fan-opening area with 1 mm clearance each side |
-| Mounting holes | `hole_spacing`, `hole_dia` | 105 mm square, 4.5 mm | Standard 120 mm fan pattern, through the case's fan slots |
-| PSU fan window | `fan_side`, `fan_window_dia` | 140 mm round on the +X wall | The RM850's 135 mm fan faces a side wall when mounted sideways |
+| Length | `length` | 30 mm | Just enough to snug the PSU; the screws do the holding |
+| Flange | `flange_size`, `flange_thickness` | 125 × 168 × 3 mm | Fan-opening area with 1 mm clearance each side |
+| Seat | `seat_top`, `seat_sides`, `seat_bottom` | 10 / 10 / 3 mm | Bottom stays narrow to clear the switch and socket |
+| Seat opening | (derived) | 67 × 141 mm | Switch, socket and rear vents stay open |
+| PSU screw holes | `psu_screw_holes`, `psu_screw_dia` | 4 holes, 4.0 mm | #6-32 clearance |
 
-The mounting holes sit at (±52.5, ±52.5) mm, beside the sleeve, with 6 mm between each
-hole and the sleeve wall for a nut or screw head. The fan window is centred 80 mm
-forward of the flange, where the fan is on the PSU. Set `fan_side="-x"` if the PSU goes
-in the other way up, or `"none"` for a closed sleeve.
+PSU screw holes, seen from outside the case with the switch at the bottom (from the
+PSU's left edge, from its top edge):
 
-## Still open
+| Hole | From left | From top | Lands on |
+|---|---|---|---|
+| Top left | 16 mm | 6 mm | Top seat |
+| Top right | 80 mm | 6 mm | Right seat |
+| Left, low | 6 mm | 134 mm | Left seat |
+| Bottom right | 80 mm | 144 mm | Right seat |
 
-1. **Print height.** Standing on its flange, the 300 mm sleeve is taller than the
-   254 mm Z height of an Airwolf AXIOM. That printer is an assumption from the 305 mm
-   bed, so set `max_print_height` to your printer's real Z. If it doesn't fit, a
-   250 mm sleeve (`length=250`) still covers the 160 mm PSU plus 90 mm for cables and
-   passes every check. Printing it lying down needs supports under the top wall.
-2. **Fan side.** Which side of the case the PSU fan should face: toward the side panel
-   (needs vents there) or toward the motherboard.
-3. **Clearance inside the case.** The sleeve runs 300 mm forward at the height of the
-   rear fan opening. Check it clears the radiator and fans (which hang ≈ 62 mm below
-   the lid), the CPU cooler and RAM, and the graphics card.
+Optional extras, both off by default: `fan_slot_holes=True` adds the 120 mm fan pattern
+(105 mm square) to the flange, and `fan_side="+x"`/`"-x"` cuts a 140 mm window for the
+PSU fan. The window only makes sense for a sleeve long enough to reach the fan, about
+160 mm.
+
+## Before printing
+
+1. **Check the screw hole positions.** They were read off a photo using the ATX-style
+   6 mm / 16 mm offsets. Measure your PSU's four holes from its edges and set
+   `psu_screw_holes` if any differ. Printing just the seat (`length=4`) is a cheap test.
+2. **Screw length.** The screws now pass through ≈ 0.8 mm of steel plus the 3 mm seat
+   before reaching the PSU. The standard 6 mm PSU screws would only catch about 2 mm of
+   thread, so use **#6-32 × 8–10 mm** screws.
 
 ## Building
 
@@ -58,7 +73,7 @@ in the other way up, or `"none"` for a closed sleeve.
 import sys; sys.path.insert(0, "/path/to/atx-case-mods/blender")
 import build
 build.build_part("psu_sleeve")
-build.build_part("psu_sleeve", length=250.0, fan_side="-x")
+build.build_part("psu_sleeve", length=40.0)
 ```
 
 or headless: `blender -b -P blender/build.py -- --part psu_sleeve --export out/`.

@@ -1,19 +1,22 @@
 """PSU sleeve: holds an ATX PSU on its side behind the case's rear 120 mm fan opening.
 
-The flange sits against the inside of the rear wall over the fan opening and bolts
-through the fan slots. The sleeve runs forward into the case. The PSU slides in from
-the front, and its rear face (switch, socket, screw holes) ends flush with the flange,
-so it can also be screwed to the rear wall once the metal is cut out.
+A short sleeve with a seat (inward lip) at its rear end. The flange sits against the
+inside of the rear wall over the fan opening. The PSU slides in from inside the case
+until its rear face stops on the seat; the PSU's own four screws then go through the
+case wall and the seat into the PSU, clamping all three together. The sleeve itself
+needs no other fixing.
 
 Coordinate system (mm): origin at the centre of the flange on its rear face, which is
 also the print bed (print standing on the flange). X = across the case (the PSU's
-86 mm side), Y = up in the case (the PSU's 150 mm side), Z = forward into the case.
+86 mm side), Y = up in the case (the PSU's 150 mm side; switch and socket at the
+bottom), Z = forward into the case. Seen from outside the case (looking along +Z),
++X is to the viewer's left.
 Full spec and notes: docs/psu-sleeve.md
 
 Usage (inside Blender, with <repo>/blender on sys.path):
     from parts import psu_sleeve
     psu_sleeve.build()
-    psu_sleeve.build(psu_sleeve.PSUSleeveParams(fan_side="-x"))
+    psu_sleeve.build(psu_sleeve.PSUSleeveParams(length=40.0))
 """
 
 from dataclasses import dataclass
@@ -35,20 +38,36 @@ class PSUSleeveParams:
 
     # Sleeve
     wall: float = 3.0             # sleeve wall thickness
-    length: float = 300.0         # flange rear face -> open front end
+    length: float = 30.0          # flange rear face -> open front end; just snugs the PSU
 
     # Flange over the rear 120 mm fan opening (1 mm clearance each side of the area)
     flange_size: Tuple[float, float] = (125.0, 168.0)  # X, Y
-    flange_thickness: float = 4.0
+    flange_thickness: float = 3.0  # = seat thickness; PSU screws pass through it
 
-    # Mounting holes through the case's fan slots (standard 120 mm fan pattern)
+    # Seat: lip at the rear end the PSU's rear face stops against, measured inward from
+    # the sleeve bore. Bottom is narrow to clear the switch / power socket.
+    seat_top: float = 10.0
+    seat_sides: float = 10.0
+    seat_bottom: float = 3.0
+
+    # PSU screw holes through the seat, on the PSU's rear face as seen from outside the
+    # case with the switch at the bottom: (from left edge, from top edge). Read off a
+    # photo of the RM850 using ATX-style 6 mm / 16 mm offsets: measure before printing.
+    psu_screw_holes: Tuple[Tuple[float, float], ...] = (
+        (16.0, 6.0), (80.0, 6.0), (6.0, 134.0), (80.0, 144.0))
+    psu_screw_dia: float = 4.0    # #6-32 clearance
+    hole_segments: int = 32
+
+    # Optional mounting holes through the case's fan slots (standard 120 mm fan
+    # pattern). Off by default: the PSU screws already clamp the sleeve to the case.
+    fan_slot_holes: bool = False
     hole_spacing: float = 105.0
     hole_dia: float = 4.5         # M4 / fan-screw clearance
-    hole_segments: int = 32
     nut_clearance: float = 3.5    # hole centre -> sleeve wall, room for a nut/screw head
 
-    # Window for the PSU's own fan (on the 150 x 160 face, i.e. an X wall)
-    fan_side: str = "+x"          # "+x", "-x" or "none"
+    # Window for the PSU's own fan (on the 150 x 160 face, i.e. an X wall). Only useful
+    # for a sleeve long enough to reach the fan (centre 80 mm in).
+    fan_side: str = "none"        # "+x", "-x" or "none"
     fan_window_dia: float = 140.0  # RM850 has a 135 mm fan
     fan_segments: int = 96
 
@@ -70,6 +89,21 @@ class PSUSleeveParams:
         h = self.hole_spacing / 2.0
         return [(dx, dy) for dx in (-h, h) for dy in (-h, h)]
 
+    def seat_opening(self):
+        """(x0, x1, y0, y1) of the opening in the seat."""
+        ix, iy = self.inner()
+        return (-ix / 2 + self.seat_sides, ix / 2 - self.seat_sides,
+                -iy / 2 + self.seat_bottom, iy / 2 - self.seat_top)
+
+    def psu_screw_positions(self):
+        """(x, y) of the PSU screw holes in part coordinates (PSU centred in the bore).
+
+        Seen from outside, +X is to the viewer's left, so 'from left edge' maps to
+        x = +psu_x/2 - u.
+        """
+        px, py = self.psu_size[0], self.psu_size[1]
+        return [(px / 2 - u, py / 2 - v) for u, v in self.psu_screw_holes]
+
     def fan_window_centre_z(self):
         """Fan sits mid-length on the PSU, whose rear face is at the flange (Z=0)."""
         return self.psu_size[2] / 2.0
@@ -88,11 +122,24 @@ def validate(p):
     if ox > fx or oy > fy:
         problems.append("Sleeve outside %.1f x %.1f is larger than the %.1f x %.1f flange."
                         % (ox, oy, fx, fy))
-    if p.length < p.psu_size[2]:
-        problems.append("Sleeve length %.1f is shorter than the %.1f mm PSU."
-                        % (p.length, p.psu_size[2]))
+    if p.length <= p.flange_thickness:
+        problems.append("Sleeve length %.1f leaves no sleeve past the %.1f mm seat."
+                        % (p.length, p.flange_thickness))
 
-    for x, y in p.hole_positions():
+    sx0, sx1, sy0, sy1 = p.seat_opening()
+    if sx1 - sx0 <= 0 or sy1 - sy0 <= 0:
+        problems.append("Seat lips close the opening completely.")
+    rs = p.psu_screw_dia / 2.0
+    for (u, v), (x, y) in zip(p.psu_screw_holes, p.psu_screw_positions()):
+        in_bore = abs(x) + rs <= ix / 2 and abs(y) + rs <= iy / 2
+        in_opening = sx0 < x + rs and x - rs < sx1 and sy0 < y + rs and y - rs < sy1
+        if not in_bore or in_opening:
+            problems.append(
+                "PSU screw hole at %.0f mm from the left, %.0f mm from the top doesn't land "
+                "fully on the seat (lips: top %.0f, sides %.0f, bottom %.0f mm)."
+                % (u, v, p.seat_top, p.seat_sides, p.seat_bottom))
+
+    for x, y in (p.hole_positions() if p.fan_slot_holes else []):
         if abs(x) + r > fx / 2.0 or abs(y) + r > fy / 2.0:
             problems.append("Mounting hole at (%.1f, %.1f) breaks out of the flange edge."
                             % (x, y))
@@ -120,8 +167,7 @@ def validate(p):
     if p.length > p.max_print_height:
         problems.append(
             "Sleeve is %.0f mm tall standing on its flange, more than the %.0f mm print "
-            "height. Shorten it (it only needs >= %.0f for the PSU) or print it lying down "
-            "with supports." % (p.length, p.max_print_height, p.psu_size[2]))
+            "height." % (p.length, p.max_print_height))
     return problems
 
 
@@ -136,10 +182,18 @@ def build_sleeve(p, name=None):
     obj = ck.box(name or PART_NAME, -fx / 2, fx / 2, -fy / 2, fy / 2, 0.0, t)
     ck.boolean(obj, ck.box("sleeve_body", -ox / 2, ox / 2, -oy / 2, oy / 2, 0.0, p.length),
                operation='UNION')
-    ck.boolean(obj, ck.box("cutter_bore", -ix / 2, ix / 2, -iy / 2, iy / 2, -e, p.length + e))
+    ck.boolean(obj, ck.box("cutter_bore", -ix / 2, ix / 2, -iy / 2, iy / 2, t, p.length + e))
 
-    holes = [ck.cylinder("cutter_hole", x, y, -e, t + e, p.hole_dia, p.hole_segments)
-             for x, y in p.hole_positions()]
+    # Bore stops at the seat; the seat has a smaller opening.
+    sx0, sx1, sy0, sy1 = p.seat_opening()
+    ck.boolean(obj, ck.box("cutter_seat_opening", sx0, sx1, sy0, sy1, -e, t + e))
+
+    holes = [ck.cylinder("cutter_psu_screw", x, y, -e, t + e, p.psu_screw_dia,
+                         p.hole_segments)
+             for x, y in p.psu_screw_positions()]
+    if p.fan_slot_holes:
+        holes += [ck.cylinder("cutter_hole", x, y, -e, t + e, p.hole_dia, p.hole_segments)
+                  for x, y in p.hole_positions()]
     ck.boolean(obj, ck.join_meshes("cutter_holes", holes))
 
     if p.fan_side in ("+x", "-x"):

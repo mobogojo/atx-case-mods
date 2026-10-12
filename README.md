@@ -40,12 +40,12 @@ Still open: the drive cage (empty bays, or removed). See
 ### PSU sleeve at a glance
 
 With the radiator in the top of the case, the PSU moves to the rear 120 mm fan opening
-and lies on its side in a printed sleeve.
+and lies on its side in a short printed sleeve.
 
 - Sleeve inside 87 × 151 mm (Corsair RM850, 86 × 150 mm, + 0.5 mm per side), 3 mm walls,
-  300 mm long, open at the front for cables.
-- 125 × 168 × 4 mm flange that bolts through the fan slots (105 mm fan hole pattern).
-- 140 mm window in one side wall for the PSU's own fan.
+  30 mm long, on a 125 × 168 × 3 mm flange.
+- A seat at the rear (10 mm top and sides, 3 mm bottom to clear the switch) stops the
+  PSU. The PSU's own screws go through the case wall and the seat, clamping everything.
 
 ## Repository layout
 
