@@ -1,8 +1,8 @@
 # 360 mm AIO radiator bracket
 
 A two-plate "sandwich" that mounts a 360 mm AIO radiator (3 × 120 mm fans) to the
-top of an old ATX case: a **10 mm structural base** under the case top panel, and a
-**4 mm cosmetic bezel** on top. The base has a pocket in its lid-facing face that
+top of an old ATX case: a **19 mm (0.75 in) structural base** under the case top panel,
+and a **4 mm cosmetic bezel** on top. The base has a pocket in its lid-facing face that
 steps over the lid's support rail, so the rest of it sits flush on the steel. Built by
 [`blender/parts/aio_360_bracket.py`](../blender/parts/aio_360_bracket.py); every
 number below is a field of `AIOBracketParams`.
@@ -18,7 +18,7 @@ face. **X** runs along the radiator (length), **Y** across it (width), **Z** up.
 |---|---|---|---|
 | Plate length (X) | `length` | 415 mm | Fits a 395–400 mm AIO body incl. end-tank tolerance |
 | Plate width (Y) | `width` | 145 mm | 12.5 mm clamping border outside a 120 mm fan |
-| Base thickness | `base_thickness` | 10 mm | 6 mm rail pocket + 4 mm floor under it |
+| Base thickness | `base_thickness` | 19.05 mm | 0.75 in standoff; 6 mm rail pocket + 13.05 mm floor under it |
 | Bezel thickness | `bezel_thickness` | 4 mm | Cosmetic trim |
 | Airflow cutout | `cutout_l` × `cutout_w` | 365 × 94 mm | Leaves a ≈ 3 mm web around the fan holes (spec had 121) |
 | Fans | `fan_count`, `fan_pitch` | 3 @ 120 mm centre-to-centre | Three 120 mm fans inline |
@@ -36,30 +36,32 @@ running across the plate (along Y). Measured at **308–325 mm from the outside 
 the case rear wall**.
 
 ```
- lid-facing face (Z = 10) ── sits flush on the steel lid
+ lid-facing face (Z = 19.05) ── sits flush on the steel lid
  ┌──────────┐            ┌──────────┐
  │          │  pocket    │          │   6 mm deep: clears the 5 mm rail by 1 mm
  │          └────────────┘          │
- │         4 mm floor               │
+ │       13.05 mm floor             │
  └──────────────────────────────────┘   Z = 0, radiator side
-          X = 119.5 → 138.5 (19 mm)
+          X = 109.5 → 148.5 (39 mm)
 ```
 
 | Parameter | Field | Value | Notes |
 |---|---|---|---|
 | Rail span from rear wall | `rail_from_rear` | 308 → 325 mm | Measured from the outside rear face, confirmed (17 mm) |
 | Rail thickness | `rail_thickness` | 5 mm | Measured |
-| Pocket depth | `pocket_depth` | 6 mm | 1 mm clearance over the rail; 6.5 mm also fine (3.5 mm floor) |
-| Pocket clearance | `pocket_clearance` | 2 mm | Added to the span, 1 mm each side → 19 mm, room to adjust |
+| Pocket depth | `pocket_depth` | 6 mm | 1 mm clearance over the rail; 6.5 mm also fine |
+| Pocket clearance | `pocket_clearance` | 22 mm | Added to the span, 11 mm each side → 39 mm, so the base drops over the rail instead of hugging it |
 | Outside rear face → plate −X edge | `rear_wall_to_plate` | 20 mm | Rear 20 mm reserved for the PSU |
 | Case length, outside | `case_length` | 440 mm | Plate must end inside it (20 + 415 = 435) |
 
 The plate runs from 20 to 435 mm from the rear wall, so the 440 mm case leaves
-5 mm at the front. With those values the pocket sits at **X = 119.5 → 138.5 mm**
-(307–326 mm from the rear wall) and runs the full
-width of the plate. It only removes material from the two side rails beside the
-airflow cutout, which drop to 4 mm thick for those 19 mm. The pocket makes the base
-**handed**: the −X end goes towards the rear wall. The bezel has no pocket.
+5 mm at the front. With those values the pocket sits at **X = 109.5 → 148.5 mm**
+(297–336 mm from the rear wall) and runs the full
+width of the plate, bracketing the 308–325 mm rail with ≈ 11 mm of slack each side so
+the base drops over it rather than squeezing around it. It only removes material from
+the two side rails beside the airflow cutout, which drop to 13.05 mm thick for those
+39 mm. The pocket makes the base **handed**: the −X end goes towards the rear wall.
+The bezel has no pocket.
 
 ## Print segmentation (Airwolf 305 mm bed)
 
@@ -72,8 +74,8 @@ every fan hole and of the rail pocket.
 
 | Piece | X bounds | Printed size incl. lap | Rail pocket |
 |---|---|---|---|
-| `Base_Seg1_Rear` | −207.5 → 0 | 217.3 × 145 × 10 mm | No |
-| `Base_Seg2_Front` | 0 → +207.5 | 217.3 × 145 × 10 mm | **Yes** |
+| `Base_Seg1_Rear` | −207.5 → 0 | 217.3 × 145 × 19.05 mm | No |
+| `Base_Seg2_Front` | 0 → +207.5 | 217.3 × 145 × 19.05 mm | **Yes** |
 | `Bezel_Seg1_Rear` | −207.5 → 0 | 217.3 × 145 × 4 mm | No |
 | `Bezel_Seg2_Front` | 0 → +207.5 | 217.3 × 145 × 4 mm | No |
 
@@ -110,7 +112,10 @@ checks for each of them, so changing a parameter back gets a warning.
    hanging off a thin wall (`validate()` wants `joint_pocket_margin` = 10 mm).
    One joint at X = 0 avoids both and gives two equal pieces.
 4. **Pocket width.** The rail is 17 mm wide (308–325 mm from the rear wall). The
-   "7 mm" in the notes was the pocket depth, now 6 mm, with the pocket 19 mm long.
+   "7 mm" in the notes was the pocket depth, now 6 mm. The pocket started 19 mm long
+   (1 mm each side) but was later widened to 39 mm (`pocket_clearance = 22`, 11 mm each
+   side) so the base drops over the rail rather than hugging it, after a test fit showed
+   the rail still fouling the close pocket.
 5. **Plate position.** The plate starts 20 mm in from the outside of the rear wall
    (`rear_wall_to_plate = 20`), leaving room for the PSU, and ends at 435 mm, inside
    the 440 mm case. The pocket only has 1 mm of play on each side, so a test fit is
