@@ -1,4 +1,4 @@
-"""360 mm AIO radiator bracket: 10 mm structural base + 4 mm cosmetic bezel.
+"""360 mm AIO radiator bracket: 19 mm (0.75 in) structural base + 4 mm cosmetic bezel.
 
 The two plates sandwich the case top panel: the base sits under the panel and the
 radiator/fans screw through it, the bezel sits on top for a clean look. Both can be
@@ -33,7 +33,7 @@ class AIOBracketParams:
     # Plate footprint
     length: float = 415.0         # X; fits a 395-400 mm radiator incl. end tanks
     width: float = 145.0          # Y; 12.5 mm border outside a 120 mm fan
-    base_thickness: float = 10.0  # lower structural bracket: 6 pocket + 4 floor
+    base_thickness: float = 19.05  # 0.75 in standoff; 6 mm pocket + 13.05 mm floor
     bezel_thickness: float = 4.0  # upper cosmetic trim
 
     # Airflow opening (single rectangular slot, centred)
@@ -55,7 +55,7 @@ class AIOBracketParams:
     rear_wall_to_plate: float = 20.0   # outside rear face -> plate's -X edge; reserved for PSU
     case_length: float = 440.0         # outside rear face -> front; plate must end inside it
     pocket_depth: float = 6.0          # rail + 1 mm so it doesn't bind (6.5 also OK)
-    pocket_clearance: float = 2.0      # 17 -> 19 mm pocket: room to adjust along X
+    pocket_clearance: float = 22.0     # 17 -> 39 mm pocket: +10 mm each side to drop over the rail
 
     # Print segmentation (shiplap joints along X)
     split_x: Tuple[float, ...] = (0.0,)  # one joint, clear of holes and pocket

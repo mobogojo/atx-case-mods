@@ -10,8 +10,8 @@ build them directly in Blender through the
 millimetre, and anyone can rebuild them with different dimensions.
 
 The first part is a **360 mm AIO radiator bracket** for the case top: a two-plate
-sandwich with a 10 mm structural base under the top panel and a 4 mm cosmetic bezel
-above it. The base has a pocket that steps over the support rail under the middle
+sandwich with a 19 mm (0.75 in) structural base under the top panel and a 4 mm cosmetic
+bezel above it. The base has a pocket that steps over the support rail under the middle
 of the lid, so it sits flush against the steel. Both plates are split into
 interlocking segments so they print on a 305 mm (Airwolf) bed.
 An ATX case top template that the bracket mounts into is next. The PSU and donor
@@ -20,7 +20,7 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 
 | Part | Module | Variants | Spec |
 |---|---|---|---|
-| 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (10 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
+| 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (19.05 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
 | PSU sleeve | `blender/parts/psu_sleeve.py` | `sleeve` | [docs/psu-sleeve.md](docs/psu-sleeve.md) |
 | ATX case top template | *planned* | | |
 
@@ -31,7 +31,7 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 - Three 120 mm fans on a 120 mm pitch, 105 × 105 mm hole pattern, 4.5 mm holes
   (M4 / 6-32), at Y = ±52.5 mm and X = ±52.5, ±67.5, ±172.5 mm.
 - Plate sits 20–435 mm from the outside of the rear wall (rear 20 mm reserved for the PSU).
-- Base: 6 mm deep × 19 mm pocket over the lid's 5 mm × 17 mm support rail (308–325 mm from the outside of the rear wall).
+- Base: 19.05 mm (0.75 in) thick; 6 mm deep × 39 mm pocket dropping over the lid's 5 mm × 17 mm support rail (308–325 mm from the outside of the rear wall), with 11 mm slack each side.
 - Each plate prints as two 217.3 mm pieces (Rear / Front) joined by a shiplap joint at
   the middle; only the front base piece has the rail pocket.
 

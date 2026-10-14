@@ -31,7 +31,10 @@ def close(a, b, tol=1e-3):
 
 
 # The originally supplied values (which validate() should flag) and the defaults.
-SPEC = aio.AIOBracketParams(cutout_w=121.0, split_x=(-108.75, 108.75))
+# pocket_clearance is pinned to the original 2 mm (1 mm/side) so this case keeps
+# documenting the original pocket at X=119.5..138.5; the defaults (WEBBED) use the
+# current wider 22 mm clearance.
+SPEC = aio.AIOBracketParams(cutout_w=121.0, split_x=(-108.75, 108.75), pocket_clearance=2.0)
 WEBBED = aio.AIOBracketParams()
 
 print("validate()")

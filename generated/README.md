@@ -6,8 +6,8 @@ watertight, and fit a 305 mm (Airwolf) bed. They are generated from the scripts 
 
 | File | Size (mm) | Notes |
 |---|---|---|
-| `AIO_360_Bracket_Base_Seg1_Rear.stl` | 217.3 × 145 × 10 | base, rear half; prints flat |
-| `AIO_360_Bracket_Base_Seg2_Front.stl` | 217.3 × 145 × 10 | base, front half; **has the lid-rail pocket** |
+| `AIO_360_Bracket_Base_Seg1_Rear.stl` | 217.3 × 145 × 19.05 | base (0.75 in), rear half; prints flat |
+| `AIO_360_Bracket_Base_Seg2_Front.stl` | 217.3 × 145 × 19.05 | base (0.75 in), front half; **has the lid-rail pocket** |
 | `AIO_360_Bracket_Bezel_Seg1_Rear.stl` | 217.3 × 145 × 4 | bezel, rear half; prints flat |
 | `AIO_360_Bracket_Bezel_Seg2_Front.stl` | 217.3 × 145 × 4 | bezel, front half; prints flat |
 | `PSU_Sleeve.stl` | 125 × 168 × 30 | prints standing on the flange, no supports |
