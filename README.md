@@ -21,6 +21,7 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 | Part | Module | Variants | Spec |
 |---|---|---|---|
 | 360 mm AIO bracket | `blender/parts/aio_360_bracket.py` | `base` (19.05 mm), `bezel` (4 mm) | [docs/aio-360-bracket.md](docs/aio-360-bracket.md) |
+| 240 mm AIO bracket | `blender/parts/aio_240_bracket.py` | `base` (19.05 mm), `bezel` (4 mm) | [docs/aio-240-bracket.md](docs/aio-240-bracket.md) |
 | PSU sleeve | `blender/parts/psu_sleeve.py` | `sleeve` | [docs/psu-sleeve.md](docs/psu-sleeve.md) |
 | ATX case top template | *planned* | | |
 
@@ -37,6 +38,20 @@ measurements are in [docs/case-measurements.md](docs/case-measurements.md).
 
 Still open: the drive cage (empty bays, or removed). See
 [docs/aio-360-bracket.md](docs/aio-360-bracket.md#still-open).
+
+### 240 mm AIO bracket at a glance
+
+A two-fan sibling of the 360 bracket for a 240 mm radiator.
+
+- Plate 295 × 145 mm, which **fits the 305 mm bed in one piece** — no split needed.
+- Airflow cutout 245 × 94 mm; two 120 mm fans on a 120 mm pitch, 105 × 105 mm hole
+  pattern, 4.5 mm holes at Y = ±52.5 mm and X = ±7.5, ±112.5 mm.
+- Base 19.05 mm (0.75 in), bezel 4 mm. **No rail pocket** — the short plate doesn't
+  span the lid support bar, which the reference build removes anyway.
+- Optional two-piece print: one shiplap joint on a fan centreline (X = −60) → unequal
+  97.3 + 217.3 mm halves, all holes clear of the seam.
+
+See [docs/aio-240-bracket.md](docs/aio-240-bracket.md).
 
 ### PSU sleeve at a glance
 
