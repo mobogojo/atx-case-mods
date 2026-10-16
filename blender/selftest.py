@@ -15,6 +15,7 @@ import bpy  # noqa: E402
 
 import casekit as ck  # noqa: E402
 from parts import aio_360_bracket as aio  # noqa: E402
+from parts import aio_240_bracket as aio240  # noqa: E402
 from parts import psu_sleeve as ps  # noqa: E402
 
 failures = []
@@ -88,6 +89,43 @@ aio.build(WEBBED)
 aio.build(WEBBED)
 coll = bpy.data.collections["%s_Base" % aio.PART_NAME]
 check(len(coll.objects) == 1, "rebuilding replaces the old objects")
+
+# 240 bracket (2 fans, no rail pocket, fits the bed in one piece)
+print("aio_240_bracket")
+P240 = aio240.AIO240BracketParams()
+check(aio240.validate(P240) == [], "240 defaults pass validation: %s" % aio240.validate(P240))
+check(sorted({round(x, 3) for x, _ in P240.hole_positions()})
+      == [-112.5, -7.5, 7.5, 112.5], "240 hole X positions on a 120 mm fan pitch")
+check(P240.length <= P240.bed_size and P240.width <= P240.bed_size,
+      "240 whole plate %.1f x %.1f fits the %.0f mm bed in one piece"
+      % (P240.length, P240.width, P240.bed_size))
+for variant in aio240.VARIANTS:
+    t = P240.thickness(variant)
+    print("build 240 %s" % variant)
+    with tempfile.TemporaryDirectory() as tmp:
+        whole = aio240.build(P240, variant=variant, export_dir=tmp)[0]
+        st = ck.mesh_stats(whole)
+        check(st["non_manifold_edges"] == 0, "240 whole plate is manifold")
+        check(all(close(a, b) for a, b in zip(st["size"], (295.0, 145.0, t))),
+              "240 whole plate size %s" % (st["size"],))
+        # No rail pocket on the 240, so the base is just frame minus holes, like the bezel.
+        frame = (295.0 * 145.0 - P240.cutout_l * P240.cutout_w) * t
+        hole_area = math.pi * (P240.hole_dia / 2) ** 2
+        n_holes = len(P240.hole_positions())
+        check(abs(st["volume_mm3"] - (frame - n_holes * hole_area * t)) < 0.01 * frame,
+              "240 volume %.0f mm^3 matches frame minus %d holes" % (st["volume_mm3"], n_holes))
+        check(os.path.getsize(os.path.join(tmp, whole.name + ".stl")) > 84, "240 STL written")
+
+        segs = aio240.build(P240, variant=variant, segmented=True)
+        check(len(segs) == 2, "240 splits into 2 segments")
+        seg_stats = [ck.mesh_stats(s) for s in segs]
+        check(all(s["non_manifold_edges"] == 0 for s in seg_stats), "240 segments are manifold")
+        total = sum(s["volume_mm3"] for s in seg_stats)
+        check(abs(total - st["volume_mm3"]) < 0.01 * st["volume_mm3"],
+              "240 segment volumes sum to the whole plate minus joint clearance")
+        check(all(max(s["size"][:2]) <= P240.bed_size for s in seg_stats),
+              "240 every segment fits the %.0f mm bed: %s"
+              % (P240.bed_size, [tuple(round(v, 2) for v in s["size"]) for s in seg_stats]))
 
 # PSU sleeve
 print("psu_sleeve")
